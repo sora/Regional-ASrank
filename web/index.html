@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+  <head>
+    <meta charset="UTF-8" />
+    <title>History of Regional AS Topologies</title>
+    <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="css/print.css" type="text/css" media="print" />
+    <!--[if IE]>
+	<link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" />
+	<![endif]-->
+    <style type="text/css">
+      body { background: #222; color: #eee; font-family: Verdana,Arial,sans-serif; }
+      td { padding: 4px 2px; }
+      h2 { padding: 6px 0; }
+      #ccrank { border: 1px #fff solid; }
+      #menu { padding: 10px; }
+      #menu b { color: #0f0; font-size: 200%; }
+      .map { text-align: center; vertical-align: middle; }
+      .hilite { background: #3E89BE; }
+      .clicked, .init { background: green; }
+    </style>
+    <script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ajaxmanager.js"></script>     
+    <script type="text/javascript" src="js/ascoremap.js"></script> 
+    <script type="text/javascript" src="js/countryrank.js"></script> 
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1766225-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+
+  <body>
+    <h2 class="loading center">Now loading .</h2>
+
+    <div class="container">
+      <div id="title" class="span-24">
+	<div class="span-18">
+	  <h1>History of Regional AS Topologies</h1>
+	</div>
+	<div class="span-6 last">
+	  <p>Last Updated: 2011/04/11</p>
+	</div>
+      </div>
+
+      <div id="menu" class="span-24">
+	<a href="#world">World</a>,
+	<a href="#us">US</a>,
+	<b><a href="#asia">Asia</a></b>,
+	<a href="#oceania">Oceania</a>,
+	<a href="#europe">Europe</a>,
+	<a href="#africa">Africa</a>
+      </div>
+
+      <div id="howtouse" class="span-24">
+	<h2>How to use</h2>
+	<ul>
+	  <li>Click a table row &rArr; focus on the AS</li>
+	  <li>Double click a image &rArr; save the PNG image</li>
+	</ul>
+      </div>
+
+      <div id="ccrank_wrap" class="span-24 center">
+	<h2>Country Ranking</h2>
+	<canvas id="ccrank" width="700" height="400"></canvas>
+      </div>
+
+      <div id="ascoremap" class="span-24">
+	<h2>AS Rank</h2>
+	<div id="contents"></div>
+      </div>
+
+      <div id="info" class="span-24">
+	<h2>Data</h2>
+	<p>TBD</p>
+	<h2>Papers</h2>
+	<p>TBD</p>
+	<h2>Links</h2>
+	<p>TBD</p>
+      </div>
+
+      <div id="footer" class="span-24 last center">
+	<address>
+	  Yohei Kuga <a href="mailto:sora@sfc.wide.ad.jp">sora@sfc.wide.ad.jp</a>
+	</address>
+      </div>
+    </div>
+
+    <script>
+    $(function() {
+	"use strict";
+	var path = "dat/history/";
+	var data = [["sketch1", 2004, "2004-V.txt", "2004-E.txt", 0],
+		    ["sketch2", 2005, "2005-V.txt", "2005-E.txt", 0],
+		    ["sketch3", 2006, "2006-V.txt", "2006-E.txt", 0],
+		    ["sketch4", 2007, "2007-V.txt", "2007-E.txt", 0],
+		    ["sketch5", 2008, "2008-V.txt", "2008-E.txt", 0],
+		    ["sketch6", 2009, "2009-V.txt", "2009-E.txt", 0],
+		    ["sketch7", 2010, "2010-V.txt", "2010-E.txt", 0]];
+
+	var queue = $.manageAjax.create('AjaxQueue', {
+	    queue: true, 
+	    cacheResponse: true
+	});
+	var ccRank = new Array();
+
+	// $('#menu > a').click(function() {
+	//     var target = $(this).text().toLowerCase();
+	//     $(this).fadeTo("fast", .5).removeAttr("href"); 
+	//     draw(target);
+	// });
+	
+	/* 
+	 * main()
+	 */
+	draw('asia');
+
+	function draw(target) {
+	    $('h2.loading').show();
+	    $('.container').hide();
+	    $('#contents').html('');
+	    ccRank = [];
+
+	    $('#ccrank_wrap > h2').append(' in ' + target.toUpperCase());
+	    $('#ascoremap > h2').append(' in ' + target.toUpperCase());
+
+	    $.each(data, function() {
+		var canvas, title, as_data, link_data;
+		canvas = this[0]; title = this[1];
+		as_data = path + target + '/' + this[2];
+		link_data = path + target + '/' + this[3];
+		getData(as_data, link_data, callback, canvas, title, 0, 1);
+	    });
+	}
+
+	/*
+	 * GET topology data
+	 */
+	function getData(as_data, link_data, callback, canvas, title, order, is_init) {
+	    var ASes, Links;
+  	    var get_as_data = {
+		url: as_data,
+		type: 'get',
+		dataType: 'text',
+		success: function(data) {
+		    ASes = data.split("\n");
+		    queue.add(get_link_data);
+		}
+	    };
+  	    var get_link_data = {
+		url: link_data,
+		type: 'get',
+		dataType: 'text',
+		success: function(data) {
+		    Links = data.split("\n");
+		    callback(ASes, Links, canvas, title, order, is_init);
+		}
+	    };
+	    queue.add(get_as_data);
+	}
+
+	/* 
+	 * draw the map after getData()
+	 */
+	function callback(ASes, Links, canvas, title, order, is_init) {
+	    if( is_init ) {
+		makeTable(ASes, canvas, title);
+	    }
+	    ASCoreMap(canvas, ASes, Links, order);
+	    $('canvas#'+canvas).parent().find('h2.loading').hide();
+	    $('canvas#'+canvas).show();
+	    $('body > h2.loading').append(".");
+	    addEvents();
+	    if( is_init && canvas == data[data.length-1][0]) {
+		$('body > h2.loading').html("Now loading .");
+		$('h2.loading').hide();
+		$('.container').fadeIn('slow');
+		CountryRank('ccrank', ccRank);
+		is_init = null;
+	    }
+	}
+
+	/*
+	 * <table />
+	 */
+	function makeTable(ASes, canvas, title) {
+	    var cc = new Array();
+	    $('#contents').append($('<table>').addClass('span-24')
+				  .append('<tr><td colspan="5"><h1>'
+					  + title + '</h1></td><td class="map" rowspan="22">'
+					  + '<h2 class="loading">Now loading </h2><canvas id="'
+					  + canvas + '" width="500" height="500"></canvas>'
+					  + '</td></tr>'
+					  + '<tr><td class="span-1">rank</td><td class="span-2">ASN</td><td class="span-5">AS Name</td>'
+					  + '<td class="span-1">CC</td><td class="span-2">Out-degree</td></tr>'));
+	    for( var i=0; i<20; i++ ) {
+		var p = ASes[i].split(' ');
+		$('#contents > table > tbody:last').append('<tr class="rank"><td>'
+							   + p[0] + '</td><td class="focus">'
+							   + p[2] + '</td><td>'
+							   + p[6] + '</td><td>'
+							   + p[7] + '</td><td>'
+							   + p[1] + '</td></tr>');
+		cc.push([p[2], p[7]]);
+	    };
+	    ccRank.push(cc);
+	}
+
+	function addEvents() {
+	    /* 
+	     * Mouse events for hover and click
+	     */
+	    $('.rank').hover(function() {
+		$(this).addClass('hilite');
+	    }, function() {
+		$(this).removeClass('hilite');
+	    });
+	    $('.rank').click(function() {
+		if( ! $(this).hasClass('clicked') ) {
+		    var canvas_id, order;
+		    $(this).siblings().each(function() {
+			$(this).removeClass('clicked');
+		    });
+		    $(this).addClass('clicked');
+		    canvas_id = $(this).parent().find('canvas').attr('id');
+		    order = $(this).children('.focus').text();
+
+		    var canvas, as_data, link_data, ASes, Links;
+		    $.each(data, function() {
+			if( this[0] == canvas_id ) {
+			    as_data = path + 'asia' + '/' + this[2];
+			    link_data = path + 'asia' + '/' + this[3];
+			    return false;
+			}
+		    });
+		    $('canvas#'+canvas_id).hide();
+		    $('canvas#'+canvas_id).parent().find('h2.loading').show();
+		    getData(as_data, link_data, callback, canvas_id, null, order, null);
+		}
+	    });
+
+	    /*
+	     * Save the ASCoreMap image
+	     */
+	    $('canvas').dblclick(function() {
+		var target_canvas = $(this).parent().parent().find('canvas').get(0);
+		var img_src = target_canvas.toDataURL("image/png");
+		d = img_src.replace("image/png", "image/octet-stream");
+		win = window.open(d, "save");
+		win.setTimeout( "close();", 400);
+	    });
+	}
+    });
+    </Script>
+</body></html>
