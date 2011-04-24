@@ -47,22 +47,25 @@
 	  <h1>History of Regional AS Topologies</h1>
 	</div>
 	<div class="span-6 last">
-	  <p>Last Updated: 2011/04/11</p>
+	  <p>Last Updated: 2011/04/17</p>
 	</div>
       </div>
 
       <div id="menu" class="span-24">
-	<a href="#world">World</a>,
-	<a href="#us">US</a>,
-	<b><a href="#asia">Asia</a></b>,
+	<a href="#us-pst">US-PST</a>,
+	<a href="#us-cst">US-CST</a>,
+	<a href="#us-mst">US-MST</a>,
+	<a href="#us-est">US-EST</a>,
+	<a href="#asia">Asia</a>,
 	<a href="#oceania">Oceania</a>,
 	<a href="#europe">Europe</a>,
-	<a href="#africa">Africa</a>
+	<a href="#unknown">Unknown</a>
       </div>
 
       <div id="howtouse" class="span-24">
 	<h2>How to use</h2>
 	<ul>
+	  <li>Please use the HTML5-friendly browser</li>
 	  <li>Click a table row &rArr; focus on the AS</li>
 	  <li>Double click a image &rArr; save the PNG image</li>
 	</ul>
@@ -112,11 +115,10 @@
 	});
 	var ccRank = new Array();
 
-	// $('#menu > a').click(function() {
-	//     var target = $(this).text().toLowerCase();
-	//     $(this).fadeTo("fast", .5).removeAttr("href"); 
-	//     draw(target);
-	// });
+	$('#menu > a').click(function() {
+	    var target = $(this).text().toLowerCase();
+	    draw(target);
+	});
 	
 	/* 
 	 * main()
@@ -128,6 +130,8 @@
 	    $('.container').hide();
 	    $('#contents').html('');
 	    ccRank = [];
+	    $('#ccrank_wrap > h2').text('Country Ranking');
+	    $('#ascoremap > h2').text('AS Rank');
 
 	    $('#ccrank_wrap > h2').append(' in ' + target.toUpperCase());
 	    $('#ascoremap > h2').append(' in ' + target.toUpperCase());
@@ -234,10 +238,11 @@
 		    order = $(this).children('.focus').text();
 
 		    var canvas, as_data, link_data, ASes, Links;
+		    var a = $('#ascoremap > h2').text().split(' ')[3].toLowerCase();
 		    $.each(data, function() {
 			if( this[0] == canvas_id ) {
-			    as_data = path + 'asia' + '/' + this[2];
-			    link_data = path + 'asia' + '/' + this[3];
+			    as_data = path + a + '/' + this[2];
+			    link_data = path + a + '/' + this[3];
 			    return false;
 			}
 		    });
