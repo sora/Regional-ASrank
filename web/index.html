@@ -20,7 +20,6 @@
       .clicked, .init { background: green; }
     </style>
     <script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery.ajaxmanager.js"></script>     
     <script type="text/javascript" src="js/ascoremap.js"></script> 
     <script type="text/javascript" src="js/countryrank.js"></script> 
 <script type="text/javascript">
@@ -109,10 +108,18 @@
 		    ["sketch6", 2009, "2009-V.txt", "2009-E.txt", 0],
 		    ["sketch7", 2010, "2010-V.txt", "2010-E.txt", 0]];
 
-	var queue = $.manageAjax.create('AjaxQueue', {
-	    queue: true, 
-	    cacheResponse: true
-	});
+	var ajaxqueue = $({});
+	$.ajaxqueue = function(opts) {
+	    var old = opts.complete;
+	    ajaxqueue.queue( function(next) {
+		opts.complete = function() {
+		    if(old) old.apply(this, arguments);
+		    next();
+		};
+		$.ajax(opts);
+	    });
+	};
+    
 	var ccRank = new Array();
 
 	$('#menu > a').click(function() {
@@ -154,21 +161,23 @@
 		url: as_data,
 		type: 'get',
 		dataType: 'text',
+		cache: true,
 		success: function(data) {
 		    ASes = data.split("\n");
-		    queue.add(get_link_data);
+		    $.ajaxqueue(get_link_data);
 		}
 	    };
   	    var get_link_data = {
 		url: link_data,
 		type: 'get',
 		dataType: 'text',
+		cache: true,
 		success: function(data) {
 		    Links = data.split("\n");
 		    callback(ASes, Links, canvas, title, order, is_init);
 		}
 	    };
-	    queue.add(get_as_data);
+	    $.ajaxqueue(get_as_data);
 	}
 
 	/* 
