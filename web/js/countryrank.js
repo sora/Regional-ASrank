@@ -48,7 +48,7 @@ function CountryRank(canvas_id, data) {
 	}
 
 	ctx.save();
-	ctx.clearRect(0, 0, w, h);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	draw_bg(w, h, marginX, marginY);
 	draw_lines(data, grid);
 	draw_points(data, grid);
