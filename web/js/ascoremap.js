@@ -21,10 +21,11 @@ function ASCoreMap(canvas_id, ASes, Links, focus_as) {
 	
 	// init
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	//ctx.beginPath();
-	//ctx.fillStyle = "rgb(34,34,34)";
+	ctx.beginPath();
+	ctx.fillStyle = "rgb(34,34,34)";
 	//ctx.rect(0, 0, canvas.width, canvas.height);
-	//ctx.fill();
+        ctx.arc(x0, y0, R*1.2, 0, Math.PI*2, true);
+	ctx.fill();
 	ctx.translate(x0, y0);
 	ctx.fillStyle = "white";
 

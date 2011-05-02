@@ -37,6 +37,13 @@ function CountryRank(canvas_id, data) {
 	var marginY = 30;
 	ctx.font = "bold 12px sans-serif";
 
+	ctx.save();
+        ctx.beginPath();
+        ctx.fillStyle = "rgb(34,34,34)";
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.fill();
+	ctx.restore();
+
 	var grid = new Array(data.length);
 	for( var i=0;i<data.length;i++ ) {
 	    grid[i] = new Array(20);
