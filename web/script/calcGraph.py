@@ -40,7 +40,7 @@ if __name__ == '__main__':
 	    ascc[asn] = cc
 
     for p in peers:
-        src, dst = p.rstrip("\n").split('-')
+        src, _, dst, _ = p.rstrip("\n").split('|')
         if src != '' or dst != '':
             peer[src] = dst
         if src not in adjacent:

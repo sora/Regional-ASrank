@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+  <head>
+    <meta charset="UTF-8" />
+    <title>IPMap</title>
+    <link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection" />
+    <link rel="stylesheet" href="css/print.css" type="text/css" media="print" />
+    <!--[if IE]>
+	<link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" />
+	<![endif]-->
+    <style type="text/css">
+      body { background: #222; color: #eee; font-family: Verdana,Arial,sans-serif; }
+      td { padding: 4px 2px; }
+      h2 { padding: 6px 0; }
+      #ccrank { border: 1px #fff solid; }
+      #menu { padding: 10px; }
+      #menu b { color: #0f0; font-size: 200%; }
+      .map { text-align: center; vertical-align: middle; }
+      .hilite { background: #3E89BE; }
+      .clicked, .init { background: green; }
+    </style>
+    <script type="text/javascript" src="js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="js/ipmap.js"></script> 
+  </head>
+
+  <body>
+    <div class="container">
+      <div id="title" class="span-24">
+	<h1>IPMap</h1>
+      </div>
+      <div id="ipmap_wrap" class="span-24 center">
+      <input type="text" id="oo" />
+      <button>draw</button>
+	<canvas id="ipmap" width="4096" height="4096"></canvas>
+      </div>
+      <div id="footer" class="span-24 last center">
+	<address>
+	  Yohei Kuga <a href="mailto:sora@sfc.wide.ad.jp">sora@sfc.wide.ad.jp</a>
+	</address>
+      </div>
+    </div>
+
+    <script>
+    $(function() {
+	"use strict";
+
+	var path = "dat/ipmap/";
+	var data = "unknown.txt";
+	var ajaxqueue = $({});
+
+	$.ajaxqueue = function(opts) {
+	    var old = opts.complete;
+	    ajaxqueue.queue( function(next) {
+		opts.complete = function() {
+		    if(old) old.apply(this, arguments);
+		    next();
+		};
+		$.ajax(opts);
+	    });
+	};
+
+	$('button').click( function() {
+	    var o1 = $('#oo').val();
+	    draw('ipmap', path+data, o1);
+	});
+
+	function draw(canvas, addr_data, o1) {
+	    var map = new Array(255);
+	    getData(canvas, addr_data, o1);
+	}
+
+	function getData(canvas, addr_data, o1) {
+	    var addrs;
+  	    var get_data = {
+		url: addr_data,
+		type: 'get',
+		dataType: 'text',
+		success: function(data) {
+		    addrs = data.split("\n");
+		    callback(canvas, addrs, o1);
+		}
+	    };
+	    $.ajaxqueue(get_data);
+	}
+
+	function callback(canvas, addrs, o1) {
+	    IPMap(canvas, addrs, o1);
+	}
+
+	$('canvas').dblclick(function() {
+	    var target_canvas = $(this).parent().parent().find('canvas').get(0);
+	    var img_src = target_canvas.toDataURL("image/png");
+	    d = img_src.replace("image/png", "image/octet-stream");
+	    win = window.open(d, "save");
+	    win.setTimeout( "close();", 400);
+	});
+    });
+    </Script>
+</body></html>
