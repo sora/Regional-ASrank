@@ -152,8 +152,8 @@ $(function() {
 	$('canvas').dblclick(function() {
 	    var target_canvas = $(this).parent().parent().find('canvas').get(0);
 	    var img_src = target_canvas.toDataURL("image/png");
-	    d = img_src.replace("image/png", "image/octet-stream");
-	    win = window.open(d, "save");
+	    var d = img_src.replace("image/png", "image/octet-stream");
+	    var win = window.open(d, "save");
 	    win.setTimeout( "close();", 400);
 	});
     }
