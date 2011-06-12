@@ -1,14 +1,16 @@
 /* 20110506, Yohei Kuga, sora@sfc.wide.ad.jp */
 $(function() {
     "use strict";
-    var path = "dat/taiwan/";
-    var data = [["sketch1", 2004, "2004-V.txt", "2004-E.txt", 0],
-               ["sketch2", 2005, "2005-V.txt", "2005-E.txt", 0],
-               ["sketch3", 2006, "2006-V.txt", "2006-E.txt", 0],
-               ["sketch4", 2007, "2007-V.txt", "2007-E.txt", 0],
-               ["sketch5", 2008, "2008-V.txt", "2008-E.txt", 0],
-               ["sketch6", 2009, "2009-V.txt", "2009-E.txt", 0],
-               ["sketch7", 2010, "2010-V.txt", "2010-E.txt", 0]];
+
+    var path   = "dat/history/";
+    var target = "asia";
+    var data   = [["2004", "2004-V.txt", "2004-E.txt"],
+                  ["2005", "2005-V.txt", "2005-E.txt"],
+                  ["2006", "2006-V.txt", "2006-E.txt"],
+                  ["2007", "2007-V.txt", "2007-E.txt"],
+                  ["2008", "2008-V.txt", "2008-E.txt"],
+                  ["2009", "2009-V.txt", "2009-E.txt"],
+                  ["2010", "2010-V.txt", "2010-E.txt"]];
 
     var ajaxqueue = $({});
     $.ajaxqueue = function(opts) {
@@ -23,10 +25,12 @@ $(function() {
     };
     
     var ccRank = new Array();
-    draw('asia');
+    draw(target);
 
     function draw(target) {
-	ccRank = [];
+	canvas_id = 0;
+	ccRank    = [];
+
 	$('h2.loading').show();
 	$('.container').hide();
 	$('#contents').html('');
@@ -37,10 +41,11 @@ $(function() {
 	$('#ascoremap > h2').append(' in ' + target.toUpperCase());
 
 	$.each(data, function() {
-	    var canvas, title, as_data, link_data;
-	    canvas = this[0]; title = this[1];
-	    as_data = path + target + '/' + this[2];
-	    link_data = path + target + '/' + this[3];
+	    var canvas_id, title, as_data, link_data;
+	    canvas    = 'sketch' + canvas_id++;
+	    title     = this[0];
+	    as_data   = path + target + '/' + this[1];
+	    link_data = path + target + '/' + this[2];
 	    getData(as_data, link_data, callback, canvas, title, 0, 1);
 	});
     }
