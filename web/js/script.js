@@ -2,8 +2,6 @@
 $(function() {
     "use strict";
 
-    var ccRank = new Array();
-
     var path   = "dat/history/";
     var target = "asia";
     var data   = [["2004", "2004-V.txt", "2004-E.txt"],
@@ -25,6 +23,8 @@ $(function() {
 	    $.ajax(opts);
 	});
     };
+
+    var ccRank = new Array();
     draw(target);
 
     function draw(target) {
