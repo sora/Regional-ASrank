@@ -9,8 +9,7 @@ if __name__ == '__main__':
     argvs   = sys.argv
     topodir = "dat/"
     peers   = open(argvs[1]).readlines()
-    geo     = open(topodir + "asngeo.txt").readlines()
-    geo2    = open(topodir + "asngeo-skitter.txt").readlines()
+    geo     = open(topodir + "aslatlong-20070110.txt").readlines()
 
     asnlng   = dict()
     adjacent = dict()
@@ -19,12 +18,7 @@ if __name__ == '__main__':
     allnode  = []
 
     for g in geo:
-        asn, name, addr, lng, lat = g.rstrip("\n").split('|')
-        if lng != '':
-            asnlng[asn] = lng
-
-    for g in geo2:
-        asn, name, addr, lng, lat = g.rstrip("\n").split('|')
+        asn, name, cc, conti, irr, date, lat, lng = g.rstrip("\n").split('|')
         if lng != '':
             asnlng[asn] = lng
 
