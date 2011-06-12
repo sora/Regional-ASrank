@@ -2,6 +2,8 @@
 $(function() {
     "use strict";
 
+    var ccRank = new Array();
+
     var path   = "dat/history/";
     var target = "asia";
     var data   = [["2004", "2004-V.txt", "2004-E.txt"],
@@ -27,7 +29,7 @@ $(function() {
 
     function draw(target) {
 	var canvas_id = 0;
-	var ccRank    = [];
+	ccRank    = [];
 
 	$('h2.loading').show();
 	$('.container').hide();
