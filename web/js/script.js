@@ -41,7 +41,7 @@ $(function() {
 	$('#ascoremap > h2').append(' in ' + target.toUpperCase());
 
 	$.each(data, function() {
-	    var canvas_id, title, as_data, link_data;
+	    var canvas, title, as_data, link_data;
 	    canvas    = 'sketch' + canvas_id++;
 	    title     = this[0];
 	    as_data   = path + target + '/' + this[1];
