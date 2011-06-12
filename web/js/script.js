@@ -23,13 +23,11 @@ $(function() {
 	    $.ajax(opts);
 	});
     };
-    
-    var ccRank = new Array();
     draw(target);
 
     function draw(target) {
-	canvas_id = 0;
-	ccRank    = [];
+	var canvas_id = 0;
+	var ccRank    = [];
 
 	$('h2.loading').show();
 	$('.container').hide();
