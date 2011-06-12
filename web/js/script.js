@@ -2,13 +2,13 @@
 $(function() {
     "use strict";
     var path = "dat/taiwan/";
-    var data = [["sketch1", 2006, "Africa-V.txt", "Africa-E.txt", 0],
-		["sketch2", 2006, "Asia-V.txt", "Asia-E.txt", 0],
-		["sketch3", 2006, "Estonia-V.txt", "Estonia-E.txt", 0],
-		["sketch4", 2006, "Europe-V.txt", "Europe-E.txt", 0],
-		["sketch5", 2006, "NorthAmerica-V.txt", "NorthAmerica-E.txt", 0],
-		["sketch6", 2006, "Oceania-V.txt", "Oceania-E.txt", 0],
-		["sketch7", 2006, "SouthAmerica-V.txt", "SouthAmerica-E.txt", 0]];
+    var data = [["sketch1", 2004, "2004-V.txt", "2004-E.txt", 0],
+               ["sketch2", 2005, "2005-V.txt", "2005-E.txt", 0],
+               ["sketch3", 2006, "2006-V.txt", "2006-E.txt", 0],
+               ["sketch4", 2007, "2007-V.txt", "2007-E.txt", 0],
+               ["sketch5", 2008, "2008-V.txt", "2008-E.txt", 0],
+               ["sketch6", 2009, "2009-V.txt", "2009-E.txt", 0],
+               ["sketch7", 2010, "2010-V.txt", "2010-E.txt", 0]];
 
     var ajaxqueue = $({});
     $.ajaxqueue = function(opts) {
