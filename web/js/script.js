@@ -3,7 +3,7 @@ $(function() {
     "use strict";
 
     var path   = "dat/history/";
-    var target = "asia";
+    var region = "asia";
     var data   = [["2004", "2004-V.txt", "2004-E.txt"],
                   ["2005", "2005-V.txt", "2005-E.txt"],
                   ["2006", "2006-V.txt", "2006-E.txt"],
@@ -25,11 +25,11 @@ $(function() {
     };
 
     var ccRank = new Array();
-    draw(target);
+    draw(region);
 
     function draw(target) {
 	var canvas_id = 0;
-	ccRank    = [];
+	ccRank        = [];
 
 	$('h2.loading').show();
 	$('.container').hide();
@@ -46,14 +46,15 @@ $(function() {
 	    title     = this[0];
 	    as_data   = path + target + '/' + this[1];
 	    link_data = path + target + '/' + this[2];
-	    getData(as_data, link_data, callback, canvas, title, 0, 1);
+	    getData(as_data, link_data, drawmap, canvas, title, 0, 1);
+	    this.push(canvas);
 	});
     }
 
     /*
      * GET topology data
      */
-    function getData(as_data, link_data, callback, canvas, title, order, is_init) {
+    function getData(as_data, link_data, drawmap, canvas, title, order, is_init) {
 	var ASes, Links;
   	var get_as_data = {
 	    url: as_data,
@@ -72,7 +73,7 @@ $(function() {
 	    cache: true,
 	    success: function(data) {
 		Links = data.split("\n");
-		callback(ASes, Links, canvas, title, order, is_init);
+		drawmap(ASes, Links, canvas, title, order, is_init);
 	    }
 	};
 	$.ajaxqueue(get_as_data);
@@ -81,7 +82,7 @@ $(function() {
     /* 
      * draw the map after getData()
      */
-    function callback(ASes, Links, canvas, title, order, is_init) {
+    function drawmap(ASes, Links, canvas, title, order, is_init) {
 	if( is_init ) {
 	    makeTable(ASes, canvas, title);
 	}
@@ -90,7 +91,7 @@ $(function() {
 	$('canvas#'+canvas).show();
 	$('body > h2.loading').append(".");
 	addEvents();
-	if( is_init && canvas == data[data.length-1][0]) {
+	if( is_init && canvas == data[data.length-1][3]) {
 	    $('body > h2.loading').html("Now loading .");
 	    $('h2.loading').hide();
 	    $('.container').fadeIn('slow');
@@ -139,15 +140,15 @@ $(function() {
 		var canvas, as_data, link_data, ASes, Links;
 		var a = $('#ascoremap > h2').text().split(' ')[3].toLowerCase();
 		$.each(data, function() {
-		    if( this[0] == canvas_id ) {
-			as_data = path + a + '/' + this[2];
-			link_data = path + a + '/' + this[3];
+		    if( this[3] == canvas_id ) {
+			as_data = path + a + '/' + this[1];
+			link_data = path + a + '/' + this[2];
 			return false;
 		    }
 		});
 		$('canvas#'+canvas_id).hide();
 		$('canvas#'+canvas_id).parent().find('h2.loading').show();
-		getData(as_data, link_data, callback, canvas_id, null, order, null);
+		getData(as_data, link_data, drawmap, canvas_id, null, order, null);
 	    }
 	});
 
